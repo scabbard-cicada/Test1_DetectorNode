@@ -273,12 +273,19 @@ ament_target_dependencies(my_node rclcpp std_msgs)   # 本项目不用这个
 `CMakeLists.txt` 里有一个手写的 `find_package`，值得看一眼：
 
 ```cmake
-find_package(onnxruntime REQUIRED)
+find_package(onnxruntime_vendor REQUIRED)
 ```
 
-为什么这个要手写？因为 `package.xml` 里写的是 apt 包名 `libonnxruntime-dev`，
-而它的 CMake 包名是小写的 `onnxruntime`，两个名字对不上，自动查找找不到它。
-这类不一致在真实项目里很常见，遇到了就手动补一行。
+严格说这行是冗余的——`onnxruntime_vendor` 已经写在 `package.xml` 里，
+`ament_auto_find_build_dependencies()` 会找到它，删掉也能编过。保留它是为了
+显式：这个包提供的 CMake target 名字叫 `onnxruntime::onnxruntime`，
+和包名 `onnxruntime_vendor` 对不上，后面 `target_link_libraries` 要写的是
+target 名，不是包名。
+
+这种"包名一个样、target 名另一个样"的情况在真实项目里很常见。判断该写哪个的
+办法是去看包安装的 CMake 配置文件，比如
+`/opt/ros/$ROS_DISTRO/share/onnxruntime_vendor/cmake/onnxruntime_vendor-extras.cmake`，
+里面 `add_library(... IMPORTED)` 那行的名字就是你要链接的 target。
 
 ### 漏写依赖会怎样
 
@@ -617,11 +624,14 @@ ros2 node info /你的节点名          # 你订阅的话题名对吗
 回调永不触发**。
 
 **启动时刷上百行 `Schema error: Trying to register schema with name ...`。**
-不是崩了。这是 Ubuntu 打包的 onnxruntime 重复注册算子的已知问题，不影响推理。
-往下翻能看到 `[ONNXRuntimeInferEngine] loaded ... input 640x384`，说明模型正常加载。
+不是崩了，不影响推理。这是 Ubuntu 自己打包的那份 onnxruntime
+（`libonnxruntime-dev`）重复注册算子的已知问题，用上一节说的 vendor 包不会出现。
+不管有没有这堆噪声，往下翻能看到
+`[ONNXRuntimeInferEngine] loaded ... input 640x384`，就说明模型正常加载。
 
-**帧率只有 20 Hz，录包是 100 Hz，是不是有 bug？**
-不是。CPU 推理单帧要 45~60 毫秒，处理不过来，丢帧是正常的。QoS 设成
+**帧率只有 20 来 Hz，录包是 100 Hz，是不是有 bug？**
+不是。CPU 推理单帧要 40~60 毫秒，处理不过来，丢帧是正常的。具体数字跟机器和
+onnxruntime 版本都有关，20~40 Hz 都算正常。QoS 设成
 `keep_last(1)` 就是为了只保留最新一帧，不让旧帧排队积压——实时系统里，
 过期的数据不如丢掉。
 
@@ -629,8 +639,16 @@ ros2 node info /你的节点名          # 你订阅的话题名对吗
 OpenCV 用 BGR 通道顺序，不是 RGB。`cv_bridge::toCvShare(msg, ...)` 的第二个参数
 要写 `"bgr8"`。写成 `"rgb8"` 的话检测框照样出来，但颜色分类是反的。
 
-**`rosdep install` 装不上 onnxruntime。**
-rosdep 的数据库里没有这个 key，必须手动 `sudo apt install libonnxruntime-dev`。
+**`apt install libonnxruntime-dev` 报"无法定位软件包"。**
+不要用这个包名。Ubuntu 官方源从 25.10 才开始收录 `libonnxruntime-dev`，
+22.04 和 24.04 都没有。本项目用 ROS 官方的 vendor 包，四个发行版都有：
+
+```bash
+sudo apt install ros-$ROS_DISTRO-onnxruntime-vendor
+```
+
+它已经写进 `package.xml`，所以正常情况下 `rosdep install --from-paths src -y`
+会自动装上，不需要单独敲这条。
 
 ---
 

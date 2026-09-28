@@ -301,16 +301,21 @@ add_executable(my_node src/my_node.cpp)
 ament_target_dependencies(my_node rclcpp std_msgs)
 ```
 
-**`ament_target_dependencies` 在当前 ROS 2 版本里已经被移除了**，照抄会报
-`Unknown CMake command`。你可以自己验证：
+**`ament_target_dependencies` 从 Lyrical 起已经被移除了**，在 Lyrical 上照抄会报
+`Unknown CMake command`。Humble / Jazzy / Kilted 里它还在，能用，但本项目不用它。
+
+想知道自己的环境有没有，跑这条：
 
 ```bash
 grep -rl "macro(ament_target_dependencies" /opt/ros/$ROS_DISTRO/share/
 ```
 
-没有输出，说明确实不存在。
+Jazzy 上会列出 `ament_cmake_target_dependencies/cmake/ament_target_dependencies.cmake`，
+Lyrical 上没有输出。注意别被目录骗了——Lyrical 里
+`share/ament_cmake_target_dependencies/` 这个目录还在，只是定义宏的那个
+`.cmake` 文件被删了，所以光看目录存不存在判断不出来。
 
-这个宏在 ROS 2 的一些版本里存在，所以官方文档、大量教程、以及 AI 的训练数据里
+这个宏在 ROS 2 的多数版本里存在，所以官方文档、大量教程、以及 AI 的训练数据里
 它随处可见。问 AI 也大概率会给你这个写法。本项目统一用 `ament_cmake_auto`：
 依赖写在 `package.xml`，用 `ament_auto_add_library` 建 target。
 
@@ -323,11 +328,13 @@ grep -rl "macro(ament_target_dependencies" /opt/ros/$ROS_DISTRO/share/
 
 现在那个文件里已经有的部分不用改。你要加的东西，按上面讲过的顺序想一遍：
 
-1. 有一个库，它的 apt 包名和 CMake 包名不一致，自动查找找不到它，需要你手动找
+1. 有一个推理库要显式 `find_package` 一下。包名去 `package.xml` 里找
 2. 有几个 `.cpp` 要编成一个 target。哪几个？去 `src/` 目录看，
    别忘了你自己写的那个
-3. 有两个库需要手动链接。一个是第 1 步找到的；另一个提供 OpenMP 支持，
-   给定的源码里用了 `#pragma omp`，不链接会报 undefined reference
+3. 有两个库需要手动链接。一个是第 1 步那个推理库——注意要链接的是它的
+   **target 名**，和包名不一样，去它的 CMake 配置文件里查（上一节讲了怎么查）；
+   另一个提供 OpenMP 支持，给定的源码里用了 `#pragma omp`，不链接会报
+   undefined reference
 4. 节点要能被 launch 启动，需要注册
 
 每一步用什么命令、参数怎么填，上面都讲了规则。具体的名字和值，
