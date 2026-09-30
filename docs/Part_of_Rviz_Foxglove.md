@@ -346,21 +346,27 @@ autoaim_interfaces/msg/ArmorDetection
 ## 五、本项目的最小调试流程
 
 ```bash
-# 终端一：加载 ROS 2 和当前工作空间
-source /opt/ros/$ROS_DISTRO/setup.bash
+# 终端一：加载当前工作空间，回放录包
 source install/setup.bash
-
-# 终端一：回放录包
 bash replay.sh easy
 
 # 终端二：启动你写的 detector launch
+source install/setup.bash
 ros2 launch autoaim_detector <你的launch文件>
 
 # 终端三：确认 bridge 和话题
+source install/setup.bash
 ros2 node list
 ros2 topic list
 ros2 topic hz /你的标注图像话题
 ```
+
+三个终端都要 `source install/setup.bash`，因为环境变量只在当前终端有效。
+
+`source /opt/ros/$ROS_DISTRO/setup.bash` 这句这里没写，因为它一般已经在 `~/.bashrc` 里
+（fishros 一键安装会自动加），新终端会自动执行，不需要你再敲。新终端里
+`echo $ROS_DISTRO` 有输出就说明已经生效。没输出的话见
+`Something.md` 的「要不要 source /opt/ros/$ROS_DISTRO/setup.bash」一节。
 
 然后：
 

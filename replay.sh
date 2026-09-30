@@ -1,0 +1,25 @@
+#!/bin/bash
+# 回放录包，供 detector 节点测试用
+#
+# 用法：
+#   bash replay.sh          # 默认 easy
+#   bash replay.sh normal   # 指定难度
+#   bash replay.sh hard
+#
+# 三档难度：
+#   easy   单机器人平动，无旋转
+#   normal 单机器人平动 + 旋转
+#   hard   多辆不同编号机器人同时运动
+
+DIFFICULTY="${1:-easy}"
+BAG_NAME="bag/bag/${DIFFICULTY}"
+
+if [ ! -d "$BAG_NAME" ]; then
+    echo "找不到录包目录: $BAG_NAME"
+    echo "请先解压 bag.7z 到项目根目录：7z x bag.7z -o bag"
+    exit 1
+fi
+
+echo "回放录包: $BAG_NAME"
+# 录包里存的是 compressed 图像话题，detector 订阅时用 image_transport 自动解压
+ros2 bag play "$BAG_NAME" --loop

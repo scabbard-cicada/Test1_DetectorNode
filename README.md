@@ -18,6 +18,17 @@
 文档以 **Ubuntu 24.04 + ROS 2 Jazzy** 为主线。命令里的 ROS 路径统一用
 `$ROS_DISTRO`，不需要按发行版手改。
 
+四份文档里的命令都**不写** `source /opt/ros/$ROS_DISTRO/setup.bash`。这句一般已经在
+`~/.bashrc` 里（用 fishros 一键安装会自动写进去），新终端会自动执行，不用你再敲一遍。
+在新终端里 `echo $ROS_DISTRO` 有输出就说明已经生效，此时每个新终端只需要：
+
+```bash
+source install/setup.bash
+```
+
+没有输出说明 `.bashrc` 里没写，处理办法见
+[Something.md](docs/Something.md) 的「要不要 source /opt/ros/$ROS_DISTRO/setup.bash」一节。
+
 ## 反馈
 
 文档有讲得不清楚的地方、或者任务卡住了，直接来问。

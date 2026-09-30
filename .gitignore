@@ -1,0 +1,26 @@
+# ROS 2 / colcon 构建产物
+build/
+install/
+log/
+
+# 录包数据（体积大，单独下发）
+bag/
+
+# 教学资料压缩包（单独下发）
+scs学习资料.zip
+
+# Python
+__pycache__/
+*.py[cod]
+
+# 模型权重（体积大，单独下发）
+*.engine
+*.trt
+
+# 编辑器
+.vscode/
+.idea/
+*.swp
+
+# 系统
+.DS_Store

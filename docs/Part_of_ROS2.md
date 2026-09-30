@@ -638,7 +638,7 @@ Node(
 # 1. 编译过了吗
 ./compile.sh
 
-# 2. 节点起得来吗（另开终端先 source install/setup.bash）
+# 2. 节点起得来吗（另开终端先 source install/setup.bash，这一句每个新终端都要）
 ros2 launch autoaim_detector <你的launch文件>
 
 # 3. 订阅发布对不对

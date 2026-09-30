@@ -1,0 +1,15 @@
+/**:
+  ros__parameters:
+
+    armor_model_name: "armor.onnx"
+    armor_confidence_threshold: 0.3
+    armor_keypoint_visibility_threshold: 0.5
+    armor_nms_threshold: 0.4
+
+    armor_refinator_brightness_thres: 80
+    armor_refinator_color_diff_thres: 10
+    armor_refinator_outward_width_ratio: 0.45
+    armor_refinator_inward_tolerance_ratio: 0.05
+    armor_refinator_vertical_margin_ratio: 0.10
+    armor_refinator_min_color_ratio: 0.03
+    armor_refinator_filter_unlit: false

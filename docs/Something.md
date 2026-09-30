@@ -45,6 +45,7 @@ tree -L 2 -I 'build|install|log'
 │   ├── Part_of_Rviz_Foxglove.md
 │   └── Something.md
 ├── LICENSE
+├── QUESTION.md
 ├── reference
 │   ├── detector_node.cpp
 │   └── README.md
@@ -55,7 +56,8 @@ tree -L 2 -I 'build|install|log'
     └── autoaim_interfaces
 ```
 
-源码在 `src/`，编译和运行用的脚本在根目录，数据在 `bag/`，文档在 `docs/`。
+源码在 `src/`，编译和运行用的脚本在根目录，数据在 `bag/`，文档在 `docs/`，
+题面 `QUESTION.md` 也在根目录。
 这种分法不是这个项目独创的，你在别的 ROS 2 项目里会看到几乎一样的布局。
 
 `reference/` 是参考答案，下发给你的版本里没有这个目录。
@@ -149,8 +151,40 @@ source 之前通常只有 `/opt/ros/$ROS_DISTRO`，之后前面多了本项目 `
 环境变量只在当前终端有效。所以每开一个新终端，都要重新 source——这也是为什么这个项目
 需要两个终端时，两个都得先 source。
 
-顺序也有讲究：先 `source /opt/ros/$ROS_DISTRO/setup.bash`，再 `source install/setup.bash`。
-反了的话本项目的路径会被 ROS 系统路径盖住。
+### 要不要 source /opt/ros/$ROS_DISTRO/setup.bash
+
+**大多数人不需要，只 `source install/setup.bash` 就够了。**
+
+ROS 2 装完之后这句一般已经写进 `~/.bashrc` 了——用 fishros 一键安装的话它会自动加上，
+手动照官方教程装的人通常也会被提示加。写进 `.bashrc` 的内容每开一个新终端都会自动执行，
+所以你打开终端时 ROS 的环境已经在了，再敲一遍只是重复一次，没有坏处也没有必要。
+
+自己确认一下，在新终端里执行：
+
+```bash
+echo $ROS_DISTRO
+```
+
+有输出（比如 `jazzy`）说明已经自动 source 过了，那么在本项目里你只需要：
+
+```bash
+source install/setup.bash
+```
+
+如果没有任何输出，说明 `.bashrc` 里没写。两个办法，选一个：
+
+```bash
+# 办法一：写进 .bashrc，以后每个新终端自动生效（推荐）
+echo 'source /opt/ros/'$ROS_DISTRO'/setup.bash' >> ~/.bashrc
+
+# 办法二：每个新终端手动敲，注意必须在 install/setup.bash 之前
+source /opt/ros/$ROS_DISTRO/setup.bash
+source install/setup.bash
+```
+
+顺序不能反：ROS 的系统环境要先在，本项目 `install/` 的路径才能叠在它前面。
+写进 `.bashrc` 的做法天然满足这个顺序，所以后面的文档里只会写
+`source install/setup.bash` 这一句。
 
 ### 改了配置要不要重新编译
 

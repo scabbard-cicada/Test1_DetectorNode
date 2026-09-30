@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+<!--ROS 1 多用 format 1/2，而 ROS 2 绝大多数采用 format 3。format 3 引入了更加细化的依赖声明标签。-->
+  <!--包的信息(元数据)-->
+  <name>autoaim_common_libs</name>
+  <version>0.0.0</version>
+  <description>Common libs for autoaim</description>
+  <maintainer email="mitsuha.2213@gmail.com">@Polyacetone</maintainer>
+  <license>MIT</license>
+
+  <!--依赖关系-->
+  <depend>OpenCV</depend>
+  <depend>ament_index_cpp</depend>
+  <depend>autoaim_interfaces</depend>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+</package>
+
+<!--
+知识讲解：
+面向的对象是ROS2的包管理系统，package.xml文件用于定义ROS2包的元数据，包括包名、版本、描述、维护者信息、许可证类型以及依赖关系等。
+ROS2包：
+ROS 2 代码组织的最小基本单元。只要一个文件夹里同时包含了 package.xml 和 CMakeLists.txt（对于 C++），ROS 2 就会将其识别为一个包。包可以包含节点、库、消息定义、服务定义等。
+包管理工具：
+colcon 负责决定先编译谁、后编译谁
+rosdep 发现你少装了哪个系统级软件（比如 OpenCV），就会自动帮你运行 apt-get install 去下载
+-->

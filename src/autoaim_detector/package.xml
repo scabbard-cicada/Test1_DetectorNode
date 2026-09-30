@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>autoaim_detector</name>
+  <version>0.0.0</version>
+  <description>
+    装甲板检测节点。任务包：推理与灯条验证的实现已给出，节点、构建配置与
+    launch 由学生实现。详见 QUESTION.md。
+  </description>
+  <maintainer email="exam@example.com">HelloWorld Vision</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>ament_cmake_auto</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>rclcpp_components</depend>
+  <depend>ament_index_cpp</depend>
+  <depend>cv_bridge</depend>
+  <depend>image_transport</depend>
+  <depend>image_transport_plugins</depend>
+
+  <depend>OpenCV</depend>
+  <depend>OpenMP</depend>
+  <depend>onnxruntime_vendor</depend>
+
+  <depend>sensor_msgs</depend>
+  <depend>builtin_interfaces</depend>
+
+  <depend>autoaim_interfaces</depend>
+  <depend>autoaim_common_libs</depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
