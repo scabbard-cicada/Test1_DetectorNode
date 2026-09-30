@@ -127,7 +127,7 @@ ROS 2 节点设计和工程组织，两者考察重点不同，你可以继续�
 回放录包：
 
 ```bash
-bash replay.sh easy
+bash replay.sh
 ```
 
 启动你写的 launch 文件：
@@ -149,7 +149,7 @@ ws://localhost:8765
 - 检测结果话题持续发布
 - 标注图像可以在 Foxglove 中显示
 - 图像中能看到装甲板检测结果
-- `easy` 和 `normal` 录包都可以运行
+- 录包循环回放的整个过程都不崩、不报错
 - launch 文件可以正确加载 yaml 参数
 
 ## 六、提交要求

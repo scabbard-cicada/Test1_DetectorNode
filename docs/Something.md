@@ -236,11 +236,10 @@ colcon build --symlink-install \
 `replay.sh` 更能说明脚本的价值。它的核心也只有一行 `ros2 bag play`，但外面包了这些：
 
 ```bash
-DIFFICULTY="${1:-easy}"                    # 不传参数就用 easy
-BAG_NAME="bag/bag/${DIFFICULTY}"
+BAG_NAME="bag/bag"
 
-if [ ! -d "$BAG_NAME" ]; then
-    echo "找不到录包目录: $BAG_NAME"
+if [ ! -d "$BAG_NAME" ] || [ ! -f "$BAG_NAME/metadata.yaml" ]; then
+    echo "找不到录包: $BAG_NAME"
     echo "请先解压 bag.7z 到项目根目录：7z x bag.7z -o bag"
     exit 1
 fi
@@ -248,13 +247,13 @@ fi
 ros2 bag play "$BAG_NAME" --loop
 ```
 
-四件事，每件都是手敲时容易漏的：
+三件事，每件都是手敲时容易漏的：
 
-1. **默认值**。直接 `bash replay.sh` 就跑 easy，不用记参数
-2. **存在性检查和可操作的提示**。录包没解压时，你看到的不是 `ros2 bag play` 抛出的一串
-   Python 异常，而是一句话告诉你该干什么，还附了命令
-3. **`--loop`**。录包只有 60 秒，不循环的话调试时要一遍遍手动重启
-4. **`exit 1`**。失败时返回非零退出码，这样别的脚本调用它时能判断出失败了
+1. **存在性检查和可操作的提示**。录包没解压时，你看到的不是 `ros2 bag play` 抛出的一串
+   Python 异常，而是一句话告诉你该干什么，还附了命令。这里检查的是 `metadata.yaml`
+   而不只是目录：目录建出来了但内容没解压，`ros2 bag play` 的报错会难懂得多
+2. **`--loop`**。录包只有 85 秒，不循环的话调试时要一遍遍手动重启
+3. **`exit 1`**。失败时返回非零退出码，这样别的脚本调用它时能判断出失败了
 
 写脚本的判断标准很简单：**一条命令你会执行超过三次，或者它有超过两个容易记错的参数，
 就值得写成脚本。** 顺手把注释和错误提示也写进去，几个月后你自己回来看也用得上。

@@ -348,7 +348,7 @@ autoaim_interfaces/msg/ArmorDetection
 ```bash
 # 终端一：加载当前工作空间，回放录包
 source install/setup.bash
-bash replay.sh easy
+bash replay.sh
 
 # 终端二：启动你写的 detector launch
 source install/setup.bash
